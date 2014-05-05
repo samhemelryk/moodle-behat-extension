@@ -49,9 +49,14 @@ class MoodleProgressFormatter extends ProgressFormatter
 
         require_once($CFG->dirroot . '/lib/behat/classes/util.php');
 
+        $browser = \Moodle\BehatExtension\Driver\MoodleSelenium2Driver::getBrowser();
+
         // Calling all directly from here as we avoid more behat framework extensions.
         $runinfo = \behat_util::get_site_info();
-        $runinfo .= 'Server OS "' . PHP_OS . '"' . ', Browser: "' . \Moodle\BehatExtension\Driver\MoodleSelenium2Driver::getBrowser() . '"' . PHP_EOL;
+        $runinfo .= 'Server OS "' . PHP_OS . '"' . ', Browser: "' . $browser . '"' . PHP_EOL;
+        if (in_array(strtolower($browser), array('chrome', 'safari'))) {
+            $runinfo .= '[MDL-45231] Clean navbar custom CSS fix is in play.' .  PHP_EOL;
+        }
         $runinfo .= 'Started at ' . date('d-m-Y, H:i', time());
 
         $this->writeln($runinfo);
